@@ -1,0 +1,78 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Assignment 5 (CSE-4137)}
+\author{Raheeb Hassan (Roll: AE-42)}
+
+\begin{document}
+\maketitle
+
+\section*{Answer to Problem 1}
+
+We know that, due to how the RSA algorithm is designed
+\begin{equation*}
+    e_b \cdot d_b \equiv 1 \mod \phi(n)
+\end{equation*}
+By definition of the modulo operator
+\begin{align*}
+    e_b \cdot d_b = 1 + \phi(n) \cdot k \\
+    \phi(n) \cdot k = e_b \cdot d_b - 1
+\end{align*}
+So, the required multiple of $\phi(n)$ is $V = e_b \cdot d_b - 1$
+
+\section*{Answer to Problem 2}
+
+As $e_a$ is relatively prime to $V$, using extended euclidean algorithm we can find $d$ such that,
+\begin{equation*}
+    d \cdot e_a = 1 \mod V
+\end{equation*}
+That is, we find the inverse of $e_a$ modulo $V$.\\
+Now, by definition of the modulo operator
+\begin{align*}
+    &d \cdot e_a = 1 + V \cdot k'\\
+    &d \cdot e_a = 1 + (\phi(n) \cdot k) \cdot k'\\
+    &d \cdot e_a = 1 + \phi(n) \cdot k''\\
+    &m ^ {d \cdot e_a} = m ^ {1 + \phi(n) \cdot k''} & & \text{($m \in Z_n$)}\\
+    &m ^ {d \cdot e_a} = m \cdot {(x ^ {\phi(n)})} ^ {k''}\\ 
+    &m ^ {d \cdot e_a} = m & & \text{(Euler's theorem, $m^{\phi(n)} = 1$)}
+\end{align*}
+
+Therefore, if we encrypt any message $m$ with secret key $d$, it can be decrypted using $e_a$.
+\begin{equation*}
+    c ^ {e_a} = (m ^ d) ^ {e_a} = m ^ {d \cdot e_a} = m
+\end{equation*}
+
+In other words, Bob can invert Alice's trapdoor permutation and obtain her signature on m (by signing it with $d$)
+\begin{equation*}
+    \sigma_a = H(m) ^ d
+\end{equation*}
+
+\section*{Answer to Problem 3}
+
+If $e_a$ is not relatively prime to $V$, then $gcd(e_a, V) \neq 1$.
+Let the prime factorization of V be:
+\begin{equation*}
+    V = \prod {p_i} ^ {q_i}
+\end{equation*}
+Now, we define,
+\begin{align*}
+    &W = \prod {p_i} ^ {q_i} \text{\space where $p_i | e_a$} \\
+    &V' = V / W
+\end{align*}
+As $W$ contains all the multiples of the common factors of $V$ and $e_a$, $gcd(e_a, V') = 1$.\\
+Moreover, as $e_a$ and $\phi(n)$ have no common factors, we can be sure that $V'$ is also a multiple of $\phi(n)$.\\\\
+Now, we can use $V'$ instead of $V$ and use the same procedure as problem 2.
+
+\end{document}
